@@ -34,6 +34,20 @@ def export_assets(project_id, dump_file_path):
     print(response.result())
     # [END asset_quickstart_export_assets]
 
+def export_assets_bigquery(project_id, dataset, table):
+    # [START asset_quickstart_export_assets_bigquery]
+    from google.cloud import asset_v1
+    from google.cloud.asset_v1.proto import asset_service_pb2
+
+    client = asset_v1.AssetServiceClient()
+    parent = client.project_path(project_id)
+    output_config = asset_service_pb2.OutputConfig()
+    output_config.bigquery_destination.dataset = dataset
+    output_config.bigquery_destination.table = table
+    output_config.bigquery_destination.force = True
+    response = client.export_assets(parent, output_config)
+    print(response.result())
+    # [END asset_quickstart_export_assets_bigquery]
 
 if __name__ == '__main__':
 
@@ -46,7 +60,16 @@ if __name__ == '__main__':
         'dump_file_path',
         help='The file ExportAssets API will dump assets to, '
         'e.g.: gs://<bucket-name>/asset_dump_file')
+    parser.add_argument(
+        'dataset',
+        help='The BigQuery dataset to export assets to ,'
+        'e.g.: projects/<project_id>/datasets/<dataset_id>')
+    parser.add_argument(
+        'table',
+        help='The BigQuery table to export assets to ,'
+        'e.g.: <table_name>')
 
     args = parser.parse_args()
 
     export_assets(args.project_id, args.dump_file_path)
+    export_assets_bigquery(args.project_id, args.dataset, args.table)

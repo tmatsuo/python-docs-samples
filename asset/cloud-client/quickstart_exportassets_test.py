@@ -18,17 +18,23 @@ import os
 import time
 
 from google.cloud import storage
+from google.cloud import bigquery
 import pytest
 
 import quickstart_exportassets
 
 PROJECT = os.environ['GCLOUD_PROJECT']
 BUCKET = 'assets-{}'.format(int(time.time()))
+DATASET = 'assets_{}'.format(int(time.time()))
 
 
 @pytest.fixture(scope='module')
 def storage_client():
     yield storage.Client()
+
+@pytest.fixture(scope='module')
+def bigquery_client():
+    yield bigquery.Client()
 
 
 @pytest.fixture(scope='module')
@@ -43,10 +49,33 @@ def asset_bucket(storage_client):
         print('Failed to delete bucket{}'.format(BUCKET))
         raise e
 
+@pytest.fixture(scope='module')
+def dataset(bigquery_client):
+    dataset_id = "{}.{}".format(PROJECT, DATASET)
+    dataset = bigquery.Dataset(dataset_id)
+    dataset.location = "US"
+    try: 
+         dataset = bigquery_client.create_dataset(dataset)
+    except Exception as e:
+         print("Failed to Create dataset {}".format(dataset_id))
+         raise e
 
-def test_export_assets(asset_bucket, capsys):
+    yield DATASET
+    
+    try: 
+        bigquery_client.delete_dataset(dataset_id, delete_contents=True, not_found_ok=False)
+    except Exception as e:
+        print('Failed to delete dataset {}'.format(dataset_id))
+        raise e
+
+def test_export_assets(asset_bucket, dataset, capsys):
     dump_file_path = 'gs://{}/assets-dump.txt'.format(asset_bucket)
     quickstart_exportassets.export_assets(PROJECT, dump_file_path)
     out, _ = capsys.readouterr()
-
     assert dump_file_path in out
+
+        
+    dataset_id = 'projects/{}/datasets/{}'.format(PROJECT, dataset)
+    quickstart_exportassets.export_assets_bigquery(PROJECT, dataset_id, 'assettable')
+    out, _ = capsys.readouterr()
+    assert dataset_id in out
