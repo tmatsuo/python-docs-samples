@@ -46,9 +46,9 @@ def asset_bucket(storage_client):
 
     try:
         bucket.delete(force=True)
-    except Exception as e:
+    except Exception as exc:
         print('Failed to delete bucket{}'.format(BUCKET))
-        raise e
+        raise exc
 
 
 @pytest.fixture(scope='module')
@@ -58,18 +58,16 @@ def dataset(bigquery_client):
     dataset.location = "US"
     try:
         dataset = bigquery_client.create_dataset(dataset)
-    except Exception as e:
-        print("Failed to Create dataset {}".format(dataset_id))
-        raise e
+    except Exception as exc:
+        raise exc
 
     yield DATASET
 
     try:
-        bigquery_client.delete_dataset(dataset_id, delete_contents=True,
-                                       not_found_ok=False)
-    except Exception as e:
-        print('Failed to delete dataset {}'.format(dataset_id))
-        raise e
+        bigquery_client.delete_dataset(
+	    dataset_id, delete_contents=True, not_found_ok=False)
+    except Exception as exc:
+        raise exc
 
 
 def test_export_assets(asset_bucket, dataset, capsys):
