@@ -65,7 +65,7 @@ def dataset(bigquery_client):
 
     try:
         bigquery_client.delete_dataset(
-	    dataset_id, delete_contents=True, not_found_ok=False)
+            dataset_id, delete_contents=True, not_found_ok=False)
     except Exception as exc:
         raise exc
 
@@ -77,7 +77,7 @@ def test_export_assets(asset_bucket, dataset, capsys):
     assert dump_file_path in out
 
     dataset_id = 'projects/{}/datasets/{}'.format(PROJECT, dataset)
-    quickstart_exportassets.export_assets_bigquery(PROJECT, dataset_id,
-                                                   'assettable')
+    quickstart_exportassets.export_assets_bigquery(
+        PROJECT, dataset_id, 'assettable')
     out, _ = capsys.readouterr()
     assert dataset_id in out
