@@ -56,18 +56,13 @@ def dataset(bigquery_client):
     dataset_id = "{}.{}".format(PROJECT, DATASET)
     dataset = bigquery.Dataset(dataset_id)
     dataset.location = "US"
-    try:
-        dataset = bigquery_client.create_dataset(dataset)
-    except Exception as exc:
-        raise exc
-
+    dataset = bigquery_client.create_dataset(dataset)
+    
     yield DATASET
 
-    try:
-        bigquery_client.delete_dataset(
+    bigquery_client.delete_dataset(
             dataset_id, delete_contents=True, not_found_ok=False)
-    except Exception as exc:
-        raise exc
+
 
 
 def test_export_assets(asset_bucket, dataset, capsys):
