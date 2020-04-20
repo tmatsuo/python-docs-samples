@@ -15,7 +15,7 @@
 # limitations under the License.
 
 import os
-import time
+import uuid
 
 from google.cloud import storage
 from google.cloud import bigquery
@@ -24,13 +24,13 @@ import pytest
 import quickstart_exportassets
 
 PROJECT = os.environ['GCLOUD_PROJECT']
-BUCKET = 'assets-{}'.format(int(time.time()))
-DATASET = 'assets_{}'.format(int(time.time()))
+BUCKET = 'assets-{}'.format(int(uuid.uuid4()))
+DATASET = 'assets_{}'.format(int(uuid.uuid4()))
 
 
 @pytest.fixture(scope='module')
 def storage_client():
-    yield storage.Client()
+    yield storage.Client()f
 
 
 @pytest.fixture(scope='module')
