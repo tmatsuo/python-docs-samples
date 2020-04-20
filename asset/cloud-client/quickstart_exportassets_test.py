@@ -30,7 +30,7 @@ DATASET = 'assets_{}'.format(int(uuid.uuid4()))
 
 @pytest.fixture(scope='module')
 def storage_client():
-    yield storage.Client()f
+    yield storage.Client()
 
 
 @pytest.fixture(scope='module')
