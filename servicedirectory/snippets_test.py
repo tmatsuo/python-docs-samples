@@ -17,72 +17,78 @@
 from os import environ
 import uuid
 
-import snippets
-
 from google.cloud import servicedirectory_v1beta1
 
-PROJECT_ID = environ['GOOGLE_CLOUD_PROJECT']
-LOCATION_ID = 'us-east1'
-NAMESPACE_ID = f'test-namespace-{uuid.uuid4().hex}'
-SERVICE_ID = f'test-service-{uuid.uuid4().hex}'
-ENDPOINT_ID = f'test-endpoint-{uuid.uuid4().hex}'
-ADDRESS = '1.2.3.4'
+import snippets
+
+
+PROJECT_ID = environ["GOOGLE_CLOUD_PROJECT"]
+LOCATION_ID = "us-east1"
+NAMESPACE_ID = f"test-namespace-{uuid.uuid4().hex}"
+SERVICE_ID = f"test-service-{uuid.uuid4().hex}"
+ENDPOINT_ID = f"test-endpoint-{uuid.uuid4().hex}"
+ADDRESS = "1.2.3.4"
 PORT = 443
 
 
 def teardown_module():
-  client = servicedirectory_v1beta1.RegistrationServiceClient()
-  response = client.list_namespaces(
-      parent=f'projects/{PROJECT_ID}/locations/{LOCATION_ID}')
-  for namespace in response.namespaces:
-    client.delete_namespace(name=namespace.name)
+    client = servicedirectory_v1beta1.RegistrationServiceClient()
+    response = client.list_namespaces(
+        parent=f"projects/{PROJECT_ID}/locations/{LOCATION_ID}"
+    )
+    for namespace in response.namespaces:
+        client.delete_namespace(name=namespace.name)
 
 
 def test_create_namespace():
-  response = snippets.create_namespace(PROJECT_ID, LOCATION_ID, NAMESPACE_ID)
+    response = snippets.create_namespace(PROJECT_ID, LOCATION_ID, NAMESPACE_ID)
 
-  assert NAMESPACE_ID in response.name
+    assert NAMESPACE_ID in response.name
 
 
 def test_create_service():
-  response = snippets.create_service(PROJECT_ID, LOCATION_ID, NAMESPACE_ID,
-                                     SERVICE_ID)
+    response = snippets.create_service(
+        PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID
+    )
 
-  assert SERVICE_ID in response.name
+    assert SERVICE_ID in response.name
 
 
 def test_create_endpoint():
-  response = snippets.create_endpoint(PROJECT_ID, LOCATION_ID, NAMESPACE_ID,
-                                      SERVICE_ID, ENDPOINT_ID, ADDRESS, PORT)
+    response = snippets.create_endpoint(
+        PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID, ENDPOINT_ID, ADDRESS, PORT
+    )
 
-  assert ENDPOINT_ID in response.name
+    assert ENDPOINT_ID in response.name
 
 
 def test_resolve_service():
-  response = snippets.resolve_service(PROJECT_ID, LOCATION_ID, NAMESPACE_ID,
-                                      SERVICE_ID)
+    response = snippets.resolve_service(
+        PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID
+    )
 
-  assert len(response.service.endpoints) == 1
-  assert ENDPOINT_ID in response.service.endpoints[0].name
+    assert len(response.service.endpoints) == 1
+    assert ENDPOINT_ID in response.service.endpoints[0].name
 
 
 def test_delete_endpoint(capsys):
-  snippets.delete_endpoint(PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID,
-                           ENDPOINT_ID)
+    snippets.delete_endpoint(
+        PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID, ENDPOINT_ID
+    )
 
-  out, _ = capsys.readouterr()
-  assert ENDPOINT_ID in out
+    out, _ = capsys.readouterr()
+    assert ENDPOINT_ID in out
 
 
 def test_delete_service(capsys):
-  snippets.delete_service(PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID)
+    snippets.delete_service(PROJECT_ID, LOCATION_ID, NAMESPACE_ID, SERVICE_ID)
 
-  out, _ = capsys.readouterr()
-  assert SERVICE_ID in out
+    out, _ = capsys.readouterr()
+    assert SERVICE_ID in out
 
 
 def test_delete_namespace(capsys):
-  snippets.delete_namespace(PROJECT_ID, LOCATION_ID, NAMESPACE_ID)
+    snippets.delete_namespace(PROJECT_ID, LOCATION_ID, NAMESPACE_ID)
 
-  out, _ = capsys.readouterr()
-  assert NAMESPACE_ID in out
+    out, _ = capsys.readouterr()
+    assert NAMESPACE_ID in out
