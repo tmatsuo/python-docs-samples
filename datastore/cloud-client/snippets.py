@@ -21,28 +21,28 @@ import google.cloud.exceptions
 
 
 def incomplete_key(client):
-    # [START datastore_incomplete_key]
+    # [START datastore_incomplete_key2]
     key = client.key('Task')
-    # [END datastore_incomplete_key]
+    # [END datastore_incomplete_key2]
 
     return key
 
 
 def named_key(client):
-    # [START datastore_named_key]
+    # [START datastore_named_key2]
     key = client.key('Task', 'sample_task')
-    # [END datastore_named_key]
+    # [END datastore_named_key2]
 
     return key
 
 
 def key_with_parent(client):
-    # [START datastore_key_with_parent]
+    # [START datastore_key_with_parent2]
     key = client.key('TaskList', 'default', 'Task', 'sample_task')
     # Alternatively
     parent_key = client.key('TaskList', 'default')
     key = client.key('Task', 'sample_task', parent=parent_key)
-    # [END datastore_key_with_parent]
+    # [END datastore_key_with_parent2]
 
     return key
 
