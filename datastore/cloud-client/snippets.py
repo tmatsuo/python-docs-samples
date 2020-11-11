@@ -16,8 +16,14 @@ from collections import defaultdict
 import datetime
 from pprint import pprint
 
+# [START run_test]
+# [START cloudrun_test]
+# [START aiplatform_test]
 from google.cloud import datastore
 import google.cloud.exceptions
+# [END aiplatform_test]
+# [END cloudrun_test]
+# [END run_test]
 
 
 def incomplete_key(client):
