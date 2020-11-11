@@ -19,8 +19,10 @@ from pprint import pprint
 # [START run_test]
 # [START cloudrun_test]
 # [START aiplatform_test]
+# [START cloud_sql_test]
 from google.cloud import datastore
 import google.cloud.exceptions
+# [END cloud_sql_test]
 # [END aiplatform_test]
 # [END cloudrun_test]
 # [END run_test]
