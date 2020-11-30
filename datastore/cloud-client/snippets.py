@@ -50,6 +50,7 @@ def key_with_parent(client):
     # [START datastore_key_with_parent2]
     key = client.key('TaskList', 'default', 'Task', 'sample_task')
     # Alternatively
+    # [START datastore_key_with_parent2]
     parent_key = client.key('TaskList', 'default')
     key = client.key('Task', 'sample_task', parent=parent_key)
     # [END datastore_key_with_parent2]
